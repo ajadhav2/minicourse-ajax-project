@@ -58,7 +58,7 @@ function loadData() {
     var nytimesUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?q=' + city + '&sort=newest&api-key=58c442f36b9645c4b199cdcded60c1a2';
 
     $.getJSON(nytimesUrl, function(data){
-        console.log(data);
+        // console.log(data);
 
         $nytHeaderElem.text('New York Times Articles About ' + city);
 
@@ -72,7 +72,11 @@ function loadData() {
                 + "</li>"
                 );
         }
-    });
+          
+    }).fail(function(e) {
+            // alert( "Handler for .fail() called." );
+            $nytHeaderElem.text('New York Times Articles Could Not Be Loaded ');
+          });
 
     return false;
 };
