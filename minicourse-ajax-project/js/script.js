@@ -80,23 +80,45 @@ function loadData() {
 
     //forum
 
-    var wikiLink='http://en.wikipedia.org/w/api.php?action=opensearch&search='+city+'&format=json';
-//console.log("wikiLink: "+wikiLink);
-    $.ajax(wikiLink, {
-        dataType: 'jsonp',
-    }).done(function (response) {
-            console.log(response);
-            var responseLength=response.length;
-            var headerList=response[1];
-            var urlList=response[3];
-            for(i=0;i<responseLength;i++){
-                //console.log(i+": "+response[i]);
-                wikiLinkURL=urlList[i];
-                wikiLinkHead=headerList[i];
-                $wikiElem.append('<li><a href="' +wikiLinkURL+ '">'+wikiLinkHead+'</a>');
-            };
-            // clearTimeout(wikiRequestTimeout);
-        });
+//     var wikiLink='http://en.wikipedia.org/w/api.php?action=opensearch&search='+city+'&format=json';
+// //console.log("wikiLink: "+wikiLink);
+//     $.ajax(wikiLink, {
+//         dataType: 'jsonp',
+//     }).done(function (response) {
+//             console.log(response);
+//             var responseLength=response.length;
+//             var headerList=response[1];
+//             var urlList=response[3];
+//             for(i=0;i<responseLength;i++){
+//                 //console.log(i+": "+response[i]);
+//                 wikiLinkURL=urlList[i];
+//                 wikiLinkHead=headerList[i];
+//                 $wikiElem.append('<li><a href="' +wikiLinkURL+ '">'+wikiLinkHead+'</a>');
+//             };
+//             // clearTimeout(wikiRequestTimeout);
+//         });
+
+    var wikiUrl='http://en.wikipedia.org/w/api.php?action=opensearch&search='+city+'&format=json&callback=wikiCallback';
+
+    var wikiRequestTimeout=setTimeout(function(){
+            $wikiElem.text("failed to get wikipedia resources");
+    },8000);
+
+    $.ajax(wikiUrl,{
+        // url: wikiUrl,
+        dataType: "jsonp",
+        // jsonp: "callback",
+        success: function(response){
+            var articleList = response[1];
+
+            for (var i = 0; i < articleList.length; i++) {
+                articleStr = articleList[i];
+                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+                $wikiElem.append('<li><a href="' + url + '">'+articleStr+'</a>');
+            }
+            clearTimeout(wikiRequestTimeout);
+        }
+    });
 
     return false;
 };
