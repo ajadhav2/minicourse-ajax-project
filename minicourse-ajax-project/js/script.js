@@ -78,6 +78,26 @@ function loadData() {
             $nytHeaderElem.text('New York Times Articles Could Not Be Loaded ');
           });
 
+    //forum
+
+    var wikiLink='http://en.wikipedia.org/w/api.php?action=opensearch&search='+city+'&format=json';
+//console.log("wikiLink: "+wikiLink);
+    $.ajax(wikiLink, {
+        dataType: 'jsonp',
+    }).done(function (response) {
+            console.log(response);
+            var responseLength=response.length;
+            var headerList=response[1];
+            var urlList=response[3];
+            for(i=0;i<responseLength;i++){
+                //console.log(i+": "+response[i]);
+                wikiLinkURL=urlList[i];
+                wikiLinkHead=headerList[i];
+                $wikiElem.append('<li><a href="' +wikiLinkURL+ '">'+wikiLinkHead+'</a>');
+            };
+            // clearTimeout(wikiRequestTimeout);
+        });
+
     return false;
 };
 
